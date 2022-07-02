@@ -1,0 +1,2 @@
+# Entropy Beacon API (Cosmos)
+This crate provides structs and methods that allow you to interact with the [Entropy Beacon] smart contracts on Cosmos networks. For a guide on integrating this crate with your project, see the [Entropy Beacon documentation](https://entropiclabs.io/beacon/docs/).
