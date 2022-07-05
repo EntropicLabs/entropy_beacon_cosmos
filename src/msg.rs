@@ -2,7 +2,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    beacon::RequestEntropyMsg,
+    beacon::{RequestEntropyMsg, UpdateConfigMsg},
     provide::{KeyStatusQuery, LastEntropyQuery, SubmitEntropyMsg, WhitelistPublicKeyMsg, ActiveRequestsQuery},
 };
 
@@ -12,6 +12,7 @@ pub enum ExecuteMsg {
     WhitelistPublicKey(WhitelistPublicKeyMsg),
     SubmitEntropy(SubmitEntropyMsg),
     RequestEntropy(RequestEntropyMsg),
+    UpdateConfig(UpdateConfigMsg),
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
