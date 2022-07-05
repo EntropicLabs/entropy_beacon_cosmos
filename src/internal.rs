@@ -1,3 +1,4 @@
+#[allow(clippy::module_inception)]
 mod internal {
     use cosmwasm_std::{to_binary, Binary, CosmosMsg, StdResult, WasmMsg};
     use schemars::JsonSchema;

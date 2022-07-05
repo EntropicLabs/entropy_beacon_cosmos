@@ -1,4 +1,4 @@
-use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, WasmMsg};
+use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, WasmMsg, Uint128};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -6,10 +6,10 @@ use crate::msg::ExecuteMsg;
 
 /// Message for updating the configuration of the beacon contract
 /// This has can only be called by the owner of the contract
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct UpdateConfigMsg {
-    pub deposit_fee: u64,
+    pub deposit_fee: Uint128,
     pub key_activation_delay: u64,
     pub protocol_fee: u64,
     pub submitter_share: u64,
