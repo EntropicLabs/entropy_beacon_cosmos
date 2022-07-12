@@ -1,4 +1,4 @@
-use cosmwasm_std::Uint128;
+use cosmwasm_std::{Uint128, Decimal};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -32,7 +32,6 @@ pub struct KeyStatusQuery {
     pub public_key: PublicKey,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct KeyStatusResponse {
@@ -62,4 +61,17 @@ pub struct ActiveRequestsQuery {}
 #[serde(rename_all = "snake_case")]
 pub struct ActiveRequestsResponse {
     pub bounties: Vec<Uint128>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct BeaconConfigQuery {}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct BeaconConfigResponse {
+    pub whitelist_deposit_amt: Uint128,
+    pub key_activation_delay: u64,
+    pub protocol_fee: u64,
+    pub submitter_share: Decimal,
 }

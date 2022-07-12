@@ -9,7 +9,7 @@ use crate::msg::ExecuteMsg;
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct UpdateConfigMsg {
-    pub deposit_fee: Uint128,
+    pub whitelist_deposit_amt: Uint128,
     pub key_activation_delay: u64,
     pub protocol_fee: u64,
     pub submitter_share: u64,
