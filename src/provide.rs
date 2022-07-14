@@ -1,4 +1,4 @@
-use cosmwasm_std::{Uint128, Decimal};
+use cosmwasm_std::{Addr, Decimal, Uint128};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -60,7 +60,7 @@ pub struct ActiveRequestsQuery {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct ActiveRequestsResponse {
-    pub bounties: Vec<Uint128>,
+    pub requests: Vec<ActiveRequestInfo>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
@@ -74,4 +74,19 @@ pub struct BeaconConfigResponse {
     pub key_activation_delay: u64,
     pub protocol_fee: u64,
     pub submitter_share: Decimal,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct ActiveRequestInfo {
+    ///How much gas the requester has provisioned for their callback transaction.
+    pub callback_gas_limit: u64,
+    ///The address to send the callback message to.
+    pub callback_address: Addr,
+    ///The address that we received the request from.
+    pub submitter: Addr,
+    ///The block that the request was received on.
+    pub submitted_block_height: u64,
+    ///The amount of tokens left after subtracting the requested gas.
+    pub submitted_bounty_amount: Uint128,
 }
