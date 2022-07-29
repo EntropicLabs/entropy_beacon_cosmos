@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub type PublicKey = String;
 
 /// A Proof contains the PublicKey of the signer, the message used to generate the proof, and the proof itself.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct Proof {
     pub signer: PublicKey,
