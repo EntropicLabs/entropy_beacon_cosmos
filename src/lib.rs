@@ -10,5 +10,7 @@ pub mod beacon;
 pub mod msg;
 pub mod provide;
 pub mod proof;
-pub use beacon::{EntropyCallbackMsg, EntropyRequest};
+pub use beacon::{EntropyCallbackMsg, EntropyRequest, calculate_gas_cost};
+pub use provide::{BeaconConfigQuery, BeaconConfigResponse};
+pub use msg::{QueryMsg as BeaconQueryMsg};
 pub mod internal;
