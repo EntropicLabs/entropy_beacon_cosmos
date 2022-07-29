@@ -1,4 +1,4 @@
-use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, WasmMsg, Uint128};
+use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, Uint128, WasmMsg};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -97,4 +97,10 @@ where
             funds: self.funds,
         }))
     }
+}
+
+pub fn calculate_gas_cost(gas_amount: u64) -> Uint128 {
+    let gas_price = 15u64;
+    let gas_cost = gas_amount * gas_price;
+    Uint128::from(gas_cost / 100u64 + 1u64)
 }
