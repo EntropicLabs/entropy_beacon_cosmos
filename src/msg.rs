@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     beacon::{RequestEntropyMsg, UpdateConfigMsg},
-    provide::{KeyStatusQuery, LastEntropyQuery, SubmitEntropyMsg, WhitelistPublicKeyMsg, ActiveRequestsQuery, ReclaimDepositMsg, BeaconConfigQuery},
+    provide::{KeyStatusQuery, LastEntropyQuery, SubmitEntropyMsg, WhitelistPublicKeyMsg, ActiveRequestsQuery, ReclaimDepositMsg, BeaconConfigQuery, AdminReturnDepositMsg},
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
@@ -14,6 +14,7 @@ pub enum ExecuteMsg {
     SubmitEntropy(SubmitEntropyMsg),
     RequestEntropy(RequestEntropyMsg),
     UpdateConfig(UpdateConfigMsg),
+    AdminReturnDeposit(AdminReturnDepositMsg)
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
