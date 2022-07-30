@@ -26,6 +26,13 @@ pub struct SubmitEntropyMsg {
     pub proof: Proof,
 }
 
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct AdminReturnDepositMsg {
+    pub key: PublicKey,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct KeyStatusQuery {
@@ -90,3 +97,4 @@ pub struct ActiveRequestInfo {
     ///The amount of tokens left after subtracting the requested gas.
     pub submitted_bounty_amount: Uint128,
 }
+
