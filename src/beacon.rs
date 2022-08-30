@@ -48,24 +48,57 @@ pub struct EntropyCallbackMsg {
     pub msg: Binary,
 }
 
+#[cfg(feature = "ecvrf")]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum ReceiverExecuteMsg {
+    ReceiveEntropy(EntropyCallbackMsg),
+}
+
+#[cfg(feature = "ecvrf")]
+impl EntropyCallbackMsg {
+    pub fn into_binary(self) -> StdResult<Binary> {
+        let msg = ReceiverExecuteMsg::ReceiveEntropy(self);
+        to_binary(&msg)
+    }
+    pub fn into_cosmos_msg<T: Into<String>>(self, contract_addr: T) -> StdResult<CosmosMsg> {
+        let msg = self.into_binary()?;
+        let execute = WasmMsg::Execute {
+            contract_addr: contract_addr.into(),
+            msg,
+            funds: vec![],
+        };
+        Ok(execute.into())
+    }
+}
+
 /// A convinience struct that smoothens the process of creating a request for
 /// entropy from the Beacon contract.
 ///
 /// # Example
 /// ```
+/// use cosmwasm_std::{Addr, Coin, Response, Uint128};
+/// use serde::{Deserialize, Serialize};
 /// use entropy_beacon_cosmos::EntropyRequest;
 ///
+/// #[derive(Serialize, Deserialize, Clone, Debug)]
+/// struct ExampleResponseStruct{
+///    example_field: String,
+/// }
+/// # fn execute() -> Result<Response, Box<dyn std::error::Error>> {
+/// // Then, in our execute function, we can create a request for entropy:
 /// let request = EntropyRequest {
 ///     callback_gas_limit: 100,
 ///     callback_address: Addr::unchecked("example_contract_address"),
-///     funds: vec![Coin{denom: "uluna", amount: 1}],
+///     funds: vec![Coin{denom: "uluna".to_string(), amount: Uint128::from(1000u128)}],
 ///     callback_msg: ExampleResponseStruct{
 ///         example_field: "example_value".to_string(),
 ///     },
 /// };
-/// // Later, when submitting the request to the Beacon contract in a contract call:
+/// // When submitting the request to the Beacon, we append it as a message to our response:
 /// let beacon_addr = Addr::unchecked("beacon_contract_address");
 /// Ok(Response::new().add_message(request.into_cosmos(beacon_addr)?))
+/// # }
 /// ```
 pub struct EntropyRequest<T>
 where
