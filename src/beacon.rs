@@ -1,4 +1,8 @@
 use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, Uint128, WasmMsg};
+
+#[cfg(feature = "ecvrf")]
+use cosmwasm_std::StdResult;
+
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 

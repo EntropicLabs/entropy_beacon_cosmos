@@ -4,7 +4,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "ecvrf")]
-pub use ecvrf::{Proof, PublicKey};
+pub use ecvrf_rs::{Proof, PublicKey};
 
 /// A PublicKey is a 64 character representation of a 32 byte key in hexadecimal.
 #[cfg(not(feature = "ecvrf"))]
