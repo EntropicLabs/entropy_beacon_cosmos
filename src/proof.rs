@@ -16,6 +16,6 @@ pub type PublicKey = String;
 #[serde(rename_all = "snake_case")]
 pub struct Proof {
     pub signer: PublicKey,
-    pub message: String,
-    pub proof: String,
+    pub message_bytes: String,
+    pub proof_bytes: String,
 }
