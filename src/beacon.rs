@@ -3,9 +3,6 @@ use cosmwasm_std::{
     WasmQuery,
 };
 
-#[cfg(feature = "ecvrf")]
-use cosmwasm_std::StdResult;
-
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
