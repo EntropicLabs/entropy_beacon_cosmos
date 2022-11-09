@@ -1,4 +1,7 @@
-use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, Uint128, WasmMsg};
+use cosmwasm_std::{
+    to_binary, Addr, Binary, Coin, CosmosMsg, Decimal, Deps, StdError, StdResult, Uint128, WasmMsg,
+    WasmQuery,
+};
 
 #[cfg(feature = "ecvrf")]
 use cosmwasm_std::StdResult;
@@ -6,17 +9,29 @@ use cosmwasm_std::StdResult;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::msg::ExecuteMsg;
+use crate::msg::{ExecuteMsg, QueryMsg};
+
+pub const BEACON_BASE_GAS: u64 = 275_000;
 
 /// Message for updating the configuration of the beacon contract
 /// This has can only be called by the owner of the contract
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct UpdateConfigMsg {
+    ///The amount of tokens that must be deposited to whitelist a new public key.
     pub whitelist_deposit_amt: Uint128,
+    ///The time, in blocks, before a whitelisted public key can be used to submit entropy.
     pub key_activation_delay: u64,
+    ///The amount of the deposit that unlocks with each submission of entropy.
+    pub refund_increment_amt: Uint128,
+    ///The fee that the protocol contract charges on top of the requested gas fees.
     pub protocol_fee: u64,
+    ///The share of the protocol fee that is distributed to the wallet submitting entropy.
     pub submitter_share: u64,
+    ///Whether or not the contract is in permissioned mode.
+    pub permissioned: bool,
+    ///Whether or not the beacon has been paused.
+    pub paused: bool,
 }
 
 /// The struct that is used to represent entropy requests to the Beacon contract.
@@ -136,8 +151,36 @@ where
     }
 }
 
-pub fn calculate_gas_cost(gas_amount: u64) -> Uint128 {
-    let gas_price = 15u64;
-    let gas_cost = gas_amount * gas_price;
-    Uint128::from(gas_cost / 100u64 + 1u64)
+/// Query the beacon contract for the estimated conversion of gas to coins.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct CalculateFeeQuery {
+    /// The amount of gas that has been requested for the callback message.
+    pub callback_gas_limit: u64,
+}
+
+impl CalculateFeeQuery {
+    /// Queries the beacon contract for the estimated fee required to pay
+    /// for a callback message with the specified gas limit.
+    pub fn query(deps: Deps, callback_gas_limit: u64, beacon_addr: Addr) -> StdResult<u64> {
+        Ok(deps
+            .querier
+            .query::<CalculateFeeResponse>(&cosmwasm_std::QueryRequest::Wasm(WasmQuery::Smart {
+                contract_addr: beacon_addr.to_string(),
+                msg: to_binary(&QueryMsg::CalculateFee(CalculateFeeQuery {
+                    callback_gas_limit,
+                }))?,
+            }))?
+            .fee)
+    }
+}
+
+/// Response from the beacon contract for the estimated conversion of gas to coins.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub struct CalculateFeeResponse {
+    /// The amount of coin that will be required to pay for the callback message.
+    pub fee: u64,
+    /// The gas price that was used to calculate the fee.
+    pub gas_price: Decimal,
 }
