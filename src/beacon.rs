@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::msg::{ExecuteMsg, QueryMsg};
 
+/// The base gas that the beacon contract consumes.
 pub const BEACON_BASE_GAS: u64 = 275_000;
 
 /// Message for updating the configuration of the beacon contract
