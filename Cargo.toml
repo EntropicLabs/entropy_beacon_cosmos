@@ -5,6 +5,9 @@ authors = ["Amit Prasad <mail@amitprasad.dev>"]
 edition = "2021"
 license = "MIT"
 description = "Entropy Network Beacon API for Cosmos chains"
+repository = "https://github.com/EntropicLabs/entropy_beacon_cosmos"
+homepage = "https://entropiclabs.io/beacon/"
+documentation = "https://entropiclabs.io/beacon/docs/"
 
 [features]
 # Enables the ecvrf-rs crate backend:
