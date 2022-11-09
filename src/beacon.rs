@@ -1,4 +1,7 @@
-use cosmwasm_std::{to_binary, Addr, Binary, Coin, CosmosMsg, StdError, Uint128, WasmMsg, Decimal};
+use cosmwasm_std::{
+    to_binary, Addr, Binary, Coin, CosmosMsg, Decimal, Deps, StdError, StdResult, Uint128, WasmMsg,
+    WasmQuery,
+};
 
 #[cfg(feature = "ecvrf")]
 use cosmwasm_std::StdResult;
@@ -6,7 +9,7 @@ use cosmwasm_std::StdResult;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::msg::ExecuteMsg;
+use crate::msg::{ExecuteMsg, QueryMsg};
 
 pub const BEACON_BASE_GAS: u64 = 275_000;
 
@@ -154,6 +157,22 @@ where
 pub struct CalculateFeeQuery {
     /// The amount of gas that has been requested for the callback message.
     pub callback_gas_limit: u64,
+}
+
+impl CalculateFeeQuery {
+    /// Queries the beacon contract for the estimated fee required to pay
+    /// for a callback message with the specified gas limit.
+    pub fn query(deps: Deps, callback_gas_limit: u64, beacon_addr: Addr) -> StdResult<u64> {
+        Ok(deps
+            .querier
+            .query::<CalculateFeeResponse>(&cosmwasm_std::QueryRequest::Wasm(WasmQuery::Smart {
+                contract_addr: beacon_addr.to_string(),
+                msg: to_binary(&QueryMsg::CalculateFee(CalculateFeeQuery {
+                    callback_gas_limit,
+                }))?,
+            }))?
+            .fee)
+    }
 }
 
 /// Response from the beacon contract for the estimated conversion of gas to coins.
