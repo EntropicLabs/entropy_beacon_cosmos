@@ -17,19 +17,23 @@ pub const BEACON_BASE_GAS: u64 = 275_000;
 #[serde(rename_all = "snake_case")]
 pub struct UpdateConfigMsg {
     ///The amount of tokens that must be deposited to whitelist a new public key.
-    pub whitelist_deposit_amt: Uint128,
-    ///The time, in blocks, before a whitelisted public key can be used to submit entropy.
-    pub key_activation_delay: u64,
+    pub whitelist_deposit_amt: Option<Uint128>,
     ///The amount of the deposit that unlocks with each submission of entropy.
-    pub refund_increment_amt: Uint128,
+    pub refund_increment_amt: Option<Uint128>,
+    ///The time, in blocks, before a whitelisted public key can be used to submit entropy.
+    pub key_activation_delay: Option<u64>,
     ///The fee that the protocol contract charges on top of the requested gas fees.
-    pub protocol_fee: u64,
+    pub protocol_fee: Option<u64>,
     ///The share of the protocol fee that is distributed to the wallet submitting entropy.
-    pub submitter_share: u64,
-    ///Whether or not the contract is in permissioned mode.
-    pub permissioned: bool,
+    pub submitter_share: Option<u64>,
+    ///The native currency of the target chain.
+    pub native_denom: Option<String>,
     ///Whether or not the beacon has been paused.
-    pub paused: bool,
+    pub paused: Option<bool>,
+    ///Whether or not the contract is in permissioned mode.
+    pub permissioned: Option<bool>,
+    ///Whether or not callback subsidization is enabled.
+    pub subsidize_callbacks: Option<bool>,
 }
 
 /// The struct that is used to represent entropy requests to the Beacon contract.
@@ -136,7 +140,14 @@ where
 {
     /// Creates a CosmosMsg that will execute the request on the Beacon contract,
     /// whose address is provided as the first argument.
+    /// Note: Removes funds with zero amount to avoid bank errors.
     pub fn into_cosmos(self, beacon_addr: Addr) -> Result<CosmosMsg, StdError> {
+        let filtered_funds = self
+            .funds
+            .iter()
+            .filter(|c| c.amount > Uint128::zero())
+            .cloned()
+            .collect();
         Ok(CosmosMsg::Wasm(WasmMsg::Execute {
             contract_addr: beacon_addr.to_string(),
             msg: to_binary(&ExecuteMsg::RequestEntropy(RequestEntropyMsg {
@@ -144,7 +155,7 @@ where
                 callback_address: self.callback_address,
                 callback_msg: to_binary(&self.callback_msg)?,
             }))?,
-            funds: self.funds,
+            funds: filtered_funds,
         }))
     }
 }

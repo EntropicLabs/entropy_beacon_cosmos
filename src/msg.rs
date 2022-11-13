@@ -45,4 +45,5 @@ pub struct InstantiateMsg {
     pub belief_gas_price: Decimal,
     pub permissioned: bool,
     pub test_mode: bool,
+    pub subsidize_callbacks: bool,
 }

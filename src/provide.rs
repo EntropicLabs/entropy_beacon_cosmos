@@ -83,10 +83,26 @@ pub struct BeaconConfigQuery {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub struct BeaconConfigResponse {
+    ///The amount of tokens that must be deposited to whitelist a new public key.
     pub whitelist_deposit_amt: Uint128,
+    ///The amount of the deposit that unlocks with each submission of entropy.
+    pub refund_increment_amt: Uint128,
+    ///The time, in blocks, before a whitelisted public key can be used to submit entropy.
     pub key_activation_delay: u64,
+    ///The fee that the protocol contract charges on top of the requested gas fees.
     pub protocol_fee: u64,
+    ///The share of the protocol fee that is distributed to the wallet submitting entropy.
     pub submitter_share: Decimal,
+    ///The native currency of the target chain.
+    pub native_denom: String,
+    ///Whether or not the contract is paused.
+    pub paused: bool,
+    ///Whether or not the contract is in permissioned mode.
+    pub permissioned: bool,
+    ///Whether or not the contract is in test mode.
+    pub test_mode: bool,
+    ///Whether or not callback subsidization is enabled.
+    pub subsidize_callbacks: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
